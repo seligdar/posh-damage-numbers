@@ -1,0 +1,68 @@
+# Posh Damage Numbers: texts of the settings page in Mod Config Menu.
+# One line per text: key = text. Keep the key, translate the text after " = ".
+# A new language: copy en.txt to <code>.txt, where <code> is the first two letters of language= in
+# Kenshi's settings.cfg (zh_CN -> zh.txt). Keys you leave out stay English.
+# Mod Config Menu draws with the game's fonts: avoid the characters — – « » … №.
+
+info = Плавные всплывающие цифры урона над персонажами.
+
+# --- General
+section.general = Основное
+Enabled = Цифры урона
+Enabled.tip = Включает и выключает мод.
+ShowOwnSquadDamage = Цифры над моими людьми
+ShowOwnSquadDamage.tip = Красные цифры, когда ранят кого-то из твоего отряда.
+ShowWords = Слова: нокаут, отрублено, убит
+ShowWords.tip = Слово над персонажем, когда его вырубили, отрубили конечность или убили.
+WordsLanguage = Язык слов
+WordsLanguage.tip = Авто - как язык игры.
+WordsLanguage.auto = Авто
+WordsLanguage.en = Английский
+WordsLanguage.ru = Русский
+ShowHealing = Цифры лечения
+ShowHealing.tip = Зелёные +N, когда персонаж быстро лечится.
+HealingThreshold = Лечение показывать от
+HealingThreshold.tip = Сколько здоровья за секунду нужно, чтобы показать цифру.
+MinDamage = Наименьший показанный урон
+MinDamage.tip = Удары слабее не показываются.
+
+# --- Look
+section.look = Вид
+NumberSize = Размер цифр
+NumberSize.tip = Высота цифры как доля роста персонажа на экране.
+MinNumberPx = Наименьшая цифра, пикс.
+MinNumberPx.tip = Предел при далёкой камере (для 1080p).
+MaxNumberPx = Наибольшая цифра, пикс.
+MaxNumberPx.tip = Предел при близкой камере (для 1080p).
+Duration = Сколько цифры видны
+Duration.tip = 1 - обычно, 2 - вдвое дольше.
+Rise = Как высоко взлетают
+Rise.tip = 0 - стоят на месте, 1 - обычно.
+Flash = Белая вспышка при появлении
+Shake = Тряска при сильных ударах
+MergeWindow = Склеивать быстрые удары, с
+MergeWindow.tip = Удары по одной цели чаще этого складываются в одну цифру. 0 - не складывать.
+
+# --- Colours
+section.colours = Цвета
+ColourLight = Слабые удары
+ColourMedium = Средние удары
+ColourHeavy = Сильные удары
+ColourSquad = Ранят моих
+ColourHeal = Лечение
+ColourKO = Слово 'нокаут'
+ColourLimb = Слово 'отрублено'
+ColourDead = Слово 'убит'
+
+# --- Advanced
+section.advanced = Дополнительно
+MaxActive = Цифр на экране сразу
+MaxActive.tip = Когда предел достигнут, убирается самая старая.
+MaxWatched = Сколько персонажей отслеживать
+MaxWatched.tip = Ближайшие персонажи на экране, у которых проверяется урон.
+Layer = Рисовать цифры
+Layer.tip = Под окнами - цифры не закрывают меню.
+Layer.Back = Под окнами
+Layer.Popup = Поверх окон
+Debug = Отладка в журнал
+Debug.tip = Пишет данные камеры в KenshiLua.log.

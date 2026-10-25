@@ -1,0 +1,5 @@
+* text=auto
+*.mod binary
+*.dll binary
+*.png binary
+*.jpg binary

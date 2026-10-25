@@ -1,0 +1,4 @@
+mcm/out/
+__pycache__/
+*.ini
+*.log

@@ -1,0 +1,68 @@
+# Posh Damage Numbers: texts of the settings page in Mod Config Menu.
+# One line per text: key = text. Keep the key, translate the text after " = ".
+# A new language: copy en.txt to <code>.txt, where <code> is the first two letters of language= in
+# Kenshi's settings.cfg (zh_CN -> zh.txt). Keys you leave out stay English.
+# Mod Config Menu draws with the game's fonts: avoid the characters — – « » … №.
+
+info = Animated floating damage numbers over characters.
+
+# --- General
+section.general = General
+Enabled = Damage numbers
+Enabled.tip = Turns the mod on and off.
+ShowOwnSquadDamage = Numbers on my people
+ShowOwnSquadDamage.tip = Red numbers when someone from your squad gets hurt.
+ShowWords = KO / severed / killed words
+ShowWords.tip = A word pops up when someone is knocked out, loses a limb or dies.
+WordsLanguage = Language of the words
+WordsLanguage.tip = Auto follows the game language.
+WordsLanguage.auto = Auto
+WordsLanguage.en = English
+WordsLanguage.ru = Russian
+ShowHealing = Healing numbers
+ShowHealing.tip = Green +N when a character heals a lot at once.
+HealingThreshold = Healing shown from
+HealingThreshold.tip = Smallest healing in one second that gets a number.
+MinDamage = Smallest damage shown
+MinDamage.tip = Smaller hits get no number.
+
+# --- Look
+section.look = Look
+NumberSize = Number size
+NumberSize.tip = Height of a number as a share of the character's height on screen.
+MinNumberPx = Smallest number, px
+MinNumberPx.tip = Limit when the camera is far (at 1080p).
+MaxNumberPx = Largest number, px
+MaxNumberPx.tip = Limit when the camera is close (at 1080p).
+Duration = How long numbers stay
+Duration.tip = 1 is normal, 2 is twice as long.
+Rise = How high numbers float
+Rise.tip = 0 keeps them in place, 1 is normal.
+Flash = White flash on appear
+Shake = Shake on big hits
+MergeWindow = Merge fast hits, s
+MergeWindow.tip = Hits on one target closer than this add up into one number. 0 turns it off.
+
+# --- Colours
+section.colours = Colours
+ColourLight = Small hits
+ColourMedium = Solid hits
+ColourHeavy = Heavy hits
+ColourSquad = My people hurt
+ColourHeal = Healing
+ColourKO = Knockout word
+ColourLimb = Severed word
+ColourDead = Killed word
+
+# --- Advanced
+section.advanced = Advanced
+MaxActive = Numbers on screen at once
+MaxActive.tip = The oldest one goes when the limit is reached.
+MaxWatched = Characters watched
+MaxWatched.tip = Nearest characters on screen checked for damage.
+Layer = Draw numbers
+Layer.tip = Under windows keeps menus clean.
+Layer.Back = Under windows
+Layer.Popup = Over windows
+Debug = Diagnostics in the log
+Debug.tip = Writes camera and projection details to KenshiLua.log.

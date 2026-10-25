@@ -1,0 +1,61 @@
+[h1]Posh Damage Numbers[/h1]
+Animated floating damage numbers for Kenshi.
+[i]Русское описание ниже. 中文说明在下方。[/i]
+
+[h2]What it does[/h2]
+[list]
+[*]Shows how much health a character really lost, after armour and blocks, including the stun that heavy blunt hits deal, as a number that pops in, flashes, floats up in an arc and fades out.
+[*]Works with every kind of damage: melee, crossbows, turrets, animals, acid and more. It reads the actual body part health, not the weapon stats.
+[*]Fast hits on the same target add up into one growing number.
+[*]Colours: warm white, gold and orange for hits on others (the harder the hit, the hotter the colour), red when someone from your squad gets hurt.
+[*]KNOCKOUT, SEVERED and KILLED pop up when it happens.
+[*]Numbers stay attached to the character and scale with the camera zoom. They are drawn under game windows, so they never cover your menus.
+[*]Words switch to Russian automatically when the game language is Russian.
+[/list]
+
+[h2]Settings[/h2]
+New: with [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3813761584]Mod Config Menu[/url] you get 27 settings in game: which numbers to show, the words and their language, healing numbers, number size, how long and how high numbers float, flash, shake, merging of fast hits, every colour and the limits. Changes apply at once, no restart. Without MCM the defaults are used.
+
+[h2]Requirements[/h2]
+[list]
+[*][url=https://www.nexusmods.com/kenshi/mods/847]RE_Kenshi[/url] 0.3.3 or newer
+[*][url=https://www.nexusmods.com/kenshi/mods/2068]KenshiLua[/url] (the latest version), enabled in the launcher
+[*]Optional: [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3813761584]Mod Config Menu[/url] for the settings
+[/list]
+
+[h2]Tips[/h2]
+[list]
+[*]Turn off the game's own damage floaters in the game options, so you do not see both.
+[*]Goes well with [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3822135808]Posh Nameplates[/url]: WoW-style names and health bars over characters. Put it after Posh Damage Numbers in the mod list.
+[/list]
+
+[h2]Compatibility[/h2]
+Script and interface only: no game data is changed. Safe to add to or remove from an existing save.
+
+Font: Exo 2 (SIL Open Font License), the same font Kenshi uses for its floaters.
+
+[h2]Русский[/h2]
+Анимированные цифры урона над персонажами.
+[list]
+[*]Цифра показывает здоровье, которое персонаж на самом деле потерял после брони и блока, вместе с оглушением от тяжёлых дробящих ударов. Она появляется со вспышкой, взлетает по дуге и гаснет.
+[*]Работает с любым уроном: ближний бой, арбалеты, турели, животные, кислота. Мод читает здоровье частей тела, а не характеристики оружия.
+[*]Быстрые удары по одной цели складываются в одну растущую цифру.
+[*]Удары по другим показаны белым, золотым и оранжевым цветом: чем сильнее удар, тем горячее цвет. Когда ранят ваших, цифра красная.
+[*]Нокаут, отрубленная конечность и смерть отмечаются словом. Язык слов следует языку игры.
+[*]Цифры привязаны к персонажу и меняют размер вместе с камерой. Они рисуются под окнами игры и не закрывают меню.
+[/list]
+Новое: с [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3813761584]Mod Config Menu[/url] в игре доступны 27 настроек: какие цифры показывать, слова и их язык, лечение, размер, время и высота полёта, вспышка, тряска, склейка быстрых ударов, все цвета и лимиты. Изменения применяются сразу. Без MCM работают значения по умолчанию.
+Нужны RE_Kenshi 0.3.3 или новее и KenshiLua последней версии, включённый в лаунчере. Стандартные всплывающие цифры урона выключите в настройках игры. Хорошо сочетается с [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3822135808]Posh Nameplates[/url], ставьте его после цифр урона. Мод меняет только скрипт и интерфейс, его можно добавить или убрать в любом сохранении.
+
+[h2]中文[/h2]
+为 Kenshi 添加动态浮动伤害数字。
+[list]
+[*]数字显示角色在护甲和格挡之后实际损失的生命值（包括重型钝击造成的眩晕伤害）：弹出、闪光、沿弧线上升，然后淡出。
+[*]适用于所有伤害：近战、弩、炮塔、动物、酸液等。读取的是身体部位的实际生命值，而不是武器数值。
+[*]对同一目标的快速连击会合并成一个不断增长的数字。
+[*]攻击他人时数字为白色、金色和橙色（伤害越高颜色越热），自己人受伤时为红色。
+[*]昏迷、断肢和死亡时会弹出文字（英文或俄文，跟随游戏语言）。
+[*]数字跟随角色并随镜头缩放，绘制在游戏窗口下方，不会遮挡菜单。
+[/list]
+新功能：安装 [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3813761584]Mod Config Menu[/url] 后可在游戏内调整 27 项设置：显示哪些数字、文字及其语言、治疗数字、数字大小、显示时长和上升高度、闪光、震动、连击合并、所有颜色和上限，修改立即生效。未安装 MCM 时使用默认值。
+需要 RE_Kenshi 0.3.3 或更新版本，以及在启动器中启用的最新版 KenshiLua。请在游戏选项中关闭原版伤害数字。推荐搭配 [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3822135808]Posh Nameplates[/url]（魔兽世界风格的姓名板），并把它放在本模组之后。本模组只修改脚本和界面，可以随时加入或移出存档。
