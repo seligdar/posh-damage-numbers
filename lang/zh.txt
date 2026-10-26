@@ -1,0 +1,61 @@
+# Posh Damage Numbers - Simplified Chinese (zh_CN -> zh.txt).
+# Translate values only. Atlas words require separate image generation by the author.
+
+info = 在角色头顶显示动态飘浮的伤害数字。
+
+section.general = 常规
+Enabled = 伤害数字
+Enabled.tip = 开启或关闭本模组。
+ShowOwnSquadDamage = 显示己方受伤数字
+ShowOwnSquadDamage.tip = 己方队伍中的角色受伤时显示红色数字。
+ShowWords = 显示昏迷／断肢／击杀提示
+ShowWords.tip = 角色昏迷、失去肢体或死亡时，弹出对应的文字提示。
+WordsLanguage = 提示文字语言
+WordsLanguage.tip = 自动模式跟随游戏语言。
+WordsLanguage.auto = 自动
+WordsLanguage.en = 英语
+WordsLanguage.ru = 俄语
+ShowHealing = 显示治疗数字
+ShowHealing.tip = 角色一次恢复较多生命值时，显示绿色的 +N。
+HealingThreshold = 治疗显示阈值
+HealingThreshold.tip = 一秒内恢复的生命值达到该数值时，才显示治疗数字。
+MinDamage = 伤害显示阈值
+MinDamage.tip = 低于该数值的伤害不显示数字。
+
+section.look = 外观
+NumberSize = 数字尺寸
+NumberSize.tip = 数字高度相对于角色在屏幕上高度的比例。
+MinNumberPx = 最小数字高度（像素）
+MinNumberPx.tip = 镜头拉远时的尺寸下限，以 1080p 分辨率为基准。
+MaxNumberPx = 最大数字高度（像素）
+MaxNumberPx.tip = 镜头拉近时的尺寸上限，以 1080p 分辨率为基准。
+Duration = 数字停留时间倍率
+Duration.tip = 1 为正常时长，2 为两倍时长。
+Rise = 数字上浮高度倍率
+Rise.tip = 0 表示停留原处，1 为正常上浮高度。
+Flash = 出现时白色闪光
+Shake = 重击时抖动
+MergeWindow = 连续伤害合并间隔（秒）
+MergeWindow.tip = 同一目标在该间隔内受到的伤害会合并为一个数字。0 表示关闭合并。
+
+section.colours = 颜色
+ColourLight = 轻微伤害
+ColourMedium = 中等伤害
+ColourHeavy = 严重伤害
+ColourSquad = 己方受伤
+ColourHeal = 治疗
+ColourKO = 昏迷提示
+ColourLimb = 断肢提示
+ColourDead = 击杀提示
+
+section.advanced = 高级
+MaxActive = 屏幕同时显示的数字数量
+MaxActive.tip = 达到数量上限时，移除最早出现的数字。
+MaxWatched = 监测角色数量
+MaxWatched.tip = 监测屏幕中距离最近的这些角色，检查其受到的伤害。
+Layer = 数字绘制层级
+Layer.tip = 选择“窗口下方”可避免数字遮挡菜单。
+Layer.Back = 窗口下方
+Layer.Popup = 窗口上方
+Debug = 在日志中记录诊断信息
+Debug.tip = 将镜头和投影的详细信息写入 KenshiLua.log。
