@@ -37,8 +37,9 @@ M.items = {
 
 -- texts the script shows itself, per language (lang/<code>.txt, script.<name>); every language has every key
 M.texts = {
-    en = {  },
-    ru = {  },
+    en = {},
+    ru = {},
+    zh = {},
 }
 
 -- settings.cfg in the game folder holds language=zh_CN; the first two letters pick the texts, English otherwise
