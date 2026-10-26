@@ -22,11 +22,13 @@ Char.__index = Char
 CHARS = {}
 function newChar(id, x, z, player, robot)
     local parts = {}
+    -- head, chest, stomach are fatal; arms and legs can be cut off
     for i = 1, 7 do
-        parts[i] = { flesh = 100, maxHealth = function() return 100 end }
+        parts[i] = { flesh = 100, fleshStun = 0, juryRigging = 0, wearDamage = 0, fatal = i <= 3,
+            maxHealth = function() return 100 end, isRobotic = function() return false end }
     end
     local c = setmetatable({ id = id, alive = true, x = x, y = 0, z = z, player = player, robot = robot,
-        lying = false, medical = { anatomy = parts } }, Char)
+        lying = false, dead = false, medical = { anatomy = parts, unconcious = false } }, Char)
     c.handle = Hand.new(c)
     CHARS[#CHARS + 1] = c
     return c
@@ -39,7 +41,7 @@ function Char:getBoneWorldPosition(name)
     return { x = self.x, y = self.y + h, z = self.z }
 end
 function Char:isPlayerCharacter() return self.player end
-function Char:isDead() return false end
+function Char:isDead() return self.dead end
 function Char:getMedical() return self.medical end
 
 -- world / camera --------------------------------------------------------------------

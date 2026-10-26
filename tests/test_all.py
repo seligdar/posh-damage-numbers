@@ -13,10 +13,14 @@ here = Path(__file__).parent
 scripts = here.parent / "mod" / "DamageNumbers" / "scripts"
 SRC = (scripts / "init" / "damage_numbers.lua").read_text(encoding="utf-8")
 GLYPH_RECTS = set()
+WORD_RECTS = set()           # KO / DEAD / LIMB pictures (both languages), the rest are digits and signs
 for line in (scripts / "dn_glyphs.lua").read_text(encoding="utf-8").splitlines():
     if line.strip().startswith('["'):
         nums = dict(kv.split(" = ") for kv in line.split("{")[1].split("}")[0].strip().split(", "))
-        GLYPH_RECTS.add((int(nums["x"]), int(nums["y"]), int(nums["w"]), int(nums["h"])))
+        rect = (int(nums["x"]), int(nums["y"]), int(nums["w"]), int(nums["h"]))
+        GLYPH_RECTS.add(rect)
+        if len(line.split('"')[1]) > 1:
+            WORD_RECTS.add(rect)
 
 FAKE_OGRE = r'''
 local ffi = require("ffi")
@@ -133,7 +137,7 @@ def basic(mode):
         L.execute("A.medical.anatomy[4].flesh = 12")          # -88: wide glyphs into the same widgets
         frames(L, 0.3)
         check_drawn_exact(L, 3, "reused widgets, wider glyphs")
-        L.execute("HANDLERS['MedicalSystem::knockout']({ me = A }, 10)")
+        L.execute("A.medical.unconcious = true")            # knocked out: seen in the frame loop
         frames(L, 0.3)
         check_drawn_exact(L, 4, "number plus KO word")
         L.execute("A.alive = false")
@@ -175,6 +179,51 @@ def debug_test_number():
     assert any("camera: view=" in l for l in log_of(L)), "camera dump in debug log"
 
 
+def words_from_frame_loop():
+    """KO, SEVERED and KILLED come from the state read in the frame loop. KenshiLua runs event handlers on the
+    thread that fires them and the game fires knockouts, amputations, deaths and hits on its worker threads, so
+    the only handler may be the frame one (two threads in Lua crash lua51.dll)."""
+    L = runtime("fallback")
+    events = sorted(L.eval("(function() local t = {} for k in pairs(HANDLERS) do t[#t + 1] = k end return t end)()").values())
+    assert events == ["MyGUI::Gui::eventFrameStart"], events
+    words = lambda: sum(1 for uv, _ in drawn(L) if uv in WORD_RECTS)
+    L.execute("C = newChar('c', -6, 0, false); C.medical.unconcious = true")   # already down when first seen
+    frames(L, 1.0)
+    assert words() == 0, "a character already knocked out when first watched gets no word"
+    L.execute("A.medical.unconcious = true")
+    frames(L, 0.3)
+    assert words() == 1, f"KO word expected, {words()} drawn"
+    frames(L, 2.5)
+    assert words() == 0, "the word fades"
+    L.execute("A.medical.unconcious = false")
+    frames(L, 0.5)
+    L.execute("A.medical.unconcious = true")
+    frames(L, 0.3)
+    assert words() == 1, "knocked out again: the word again"
+    frames(L, 2.5)
+    L.execute("A.medical.anatomy[5].flesh = -60")             # not cut yet: -60 > -(100 - 0)
+    frames(L, 0.3)
+    assert words() == 0, "a badly hurt arm is not a severed one"
+    frames(L, 2.5)
+    L.execute("A.medical.anatomy[5].flesh = -150")            # -150 <= -100: the game cuts it off
+    frames(L, 0.3)
+    assert words() == 1, "SEVERED word expected"
+    frames(L, 2.5)
+    L.execute("A.medical.anatomy[6].fleshStun = 30; A.medical.anatomy[6].wearDamage = 20; A.medical.anatomy[6].flesh = -50")
+    frames(L, 0.3)                                            # -50 - 30 + 0 = -80 <= -(100 - 20)
+    assert words() == 1, "stun and wear count like the game's own check"
+    frames(L, 2.5)
+    L.execute("A.medical.anatomy[1].flesh = -300")            # the head is fatal, never 'severed'
+    frames(L, 0.3)
+    assert words() == 0, "no SEVERED word for the head"
+    L.execute("A.dead = true")
+    frames(L, 0.3)
+    assert words() == 1, "KILLED word expected"
+    frames(L, 3)
+    errors = [l for l in log_of(L) if "error" in l.lower()]
+    assert not errors, errors
+
+
 if __name__ == "__main__":
     scenario("fallback projection", basic("fallback"))
     scenario("exact Ogre projection", basic("ogre"))
@@ -182,5 +231,6 @@ if __name__ == "__main__":
     scenario("broken matrices fall back", broken_matrices)
     scenario("exact path disagreeing with the game falls back", disagreeing_exact)
     scenario("debug test number", debug_test_number)
+    scenario("words from the frame loop, no game event handlers", words_from_frame_loop)
     print("FAILURES:", failures)
     sys.exit(1 if failures else 0)

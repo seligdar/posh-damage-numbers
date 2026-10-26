@@ -801,9 +801,63 @@ end
 -- ===================================================================================
 -- Watch list and damage detection
 -- ===================================================================================
-local watched = {}           -- key -> { ref, parts = {flesh...}, n, heal, healT }
+local watched = {}           -- key -> { ref, parts = {flesh...}, n, heal, healT, ko, dead, severed }
 local hitUntil = {}          -- key -> time until which a hit character stays watched
 local clock = 0
+
+-- Knocked out, dead, and which limbs are cut off, read in the frame loop. The game's own events for these
+-- (MedicalSystem::knockout, MedicalSystem::amputate, Character::declareDead) fire on its worker threads, and
+-- KenshiLua runs event handlers on the thread that fires them: Lua would run on two threads at once and crash
+-- inside lua51.dll in big fights. The game cuts a limb off right after a hit when
+-- flesh - stun + juryRigging <= -(maxHealth - wearDamage) (MedicalSystem::amputate); robot limbs are left out.
+local function readStates(c, severed)
+    local med = c.medical
+    if med == nil then med = c:getMedical() end
+    local n = 0
+    for _, part in ipairs(med.anatomy) do
+        n = n + 1
+        local cut = false
+        if not part.fatal then
+            local okR, robot = pcall(function() return part:isRobotic() end)
+            if okR and robot == false then
+                local mh = part:maxHealth()
+                cut = part.flesh - (part.fleshStun or 0) + (part.juryRigging or 0) <= -(mh - (part.wearDamage or 0))
+            end
+        end
+        severed[n] = cut
+    end
+    for i = n + 1, #severed do severed[i] = nil end
+    local okD, dead = pcall(function() return c:isDead() end)
+    return med.unconcious == true, okD and dead == true, n
+end
+
+local function onScreenWord(c, word)
+    if not CONFIG.enabled or not CONFIG.showWords or c == nil then return end
+    local key = keyOf(c)
+    if key == nil then return end
+    local ax, ay, az = anchorOf(c, key)
+    if ax == nil or project(ax, ay, az) == nil then return end
+    spawn(handleRef(c), key, "word", word, 1, false)
+end
+
+-- a word when the state changes since the last reading; the first reading of a character is only a baseline
+local nowCut = {}
+local function checkWords(c, w)
+    local ok, ko, dead, n = pcall(readStates, c, nowCut)
+    if not ok then return end
+    if w.severed ~= nil then
+        if ko and not w.ko then onScreenWord(c, "KO") end
+        if n == #w.severed then
+            for i = 1, n do
+                if nowCut[i] and not w.severed[i] then onScreenWord(c, "LIMB") break end
+            end
+        end
+        if dead and not w.dead then onScreenWord(c, "DEAD") end
+    end
+    w.ko, w.dead, w.severed = ko, dead, w.severed or {}
+    for i = 1, n do w.severed[i] = nowCut[i] end
+    for i = n + 1, #w.severed do w.severed[i] = nil end
+end
 
 local function watch(c, key)
     local w = watched[key]
@@ -817,6 +871,7 @@ local function watch(c, key)
     -- a body that is already dead when first watched never gets a number
     local okD, dead = pcall(function() return c:isDead() end)
     w.deadShown = okD and dead == true
+    checkWords(c, w)
     watched[key] = w
     return w
 end
@@ -918,6 +973,7 @@ local function sample(dt)
                 watched[key] = nil
             else
                 local ok, n, parts = pcall(readParts, c, current, currentStun)
+                if ok then checkWords(c, w) end
                 if not ok then
                     watched[key] = nil
                 elseif n ~= w.n then
@@ -969,50 +1025,13 @@ local function sample(dt)
 end
 
 -- ===================================================================================
--- Game events
+-- Events: only the frame (see readStates for why)
 -- ===================================================================================
-local function onScreenWord(c, word)
-    if not CONFIG.enabled or not CONFIG.showWords or c == nil then return end
-    local key = keyOf(c)
-    if key == nil then return end
-    local ax, ay, az = anchorOf(c, key)
-    if ax == nil or project(ax, ay, az) == nil then return end
-    spawn(handleRef(c), key, "word", word, 1, false)
-end
-
 local function safeOn(event, fn)
     local ok, err = pcall(function() Events.on(event, fn) end)
     if not ok then warnOnce("event " .. event, "could not subscribe to " .. event .. ": " .. tostring(err)) end
 end
 
--- a character in a fight is watched before onlookers when more than maxWatched are on screen
-local function markFighting(c)
-    if c == nil then return end
-    local key = keyOf(c)
-    if key == nil then return end
-    hitUntil[key] = clock + CONFIG.keepAfterHitSeconds
-    watch(c, key)
-end
-
--- both sides of a melee exchange are fighting: the attacker is watched too, so a crossbow bolt into him
--- (no event of its own) still gets its number in a big battle
-safeOn("Character::_NV_hitByMeleeAttack", function(self, cutDir, damage, attacker)
-    if not CONFIG.enabled then return end
-    markFighting(self)
-    pcall(markFighting, attacker)
-end)
-
-safeOn("MedicalSystem::knockout", function(self)
-    pcall(function() onScreenWord(self.me, "KO") end)
-end)
-
-safeOn("MedicalSystem::amputate", function(self)
-    pcall(function() onScreenWord(self.me, "LIMB") end)
-end)
-
-safeOn("Character::declareDead", function(self)
-    pcall(function() onScreenWord(self, "DEAD") end)
-end)
 
 -- ===================================================================================
 -- Frame loop
