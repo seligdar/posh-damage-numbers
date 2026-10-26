@@ -34,6 +34,8 @@ Script and interface only: no game data is changed. Safe to add to or remove fro
 
 Font: Exo 2 (SIL Open Font License), the same font Kenshi uses for its floaters.
 
+Simplified Chinese translation by 夕妄 ([url=https://github.com/zXiWang]zXiWang[/url]).
+
 [h2]Русский[/h2]
 Анимированные цифры урона над персонажами.
 [list]
@@ -46,6 +48,8 @@ Font: Exo 2 (SIL Open Font License), the same font Kenshi uses for its floaters.
 [/list]
 Новое: с [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3813761584]Mod Config Menu[/url] в игре доступны 27 настроек: какие цифры показывать, слова и их язык, лечение, размер, время и высота полёта, вспышка, тряска, склейка быстрых ударов, все цвета и лимиты. Изменения применяются сразу. Без MCM работают значения по умолчанию.
 Нужны RE_Kenshi 0.3.3 или новее и KenshiLua последней версии, включённый в лаунчере. Стандартные всплывающие цифры урона выключите в настройках игры. Хорошо сочетается с [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3822135808]Posh Nameplates[/url], ставьте его после цифр урона. Мод меняет только скрипт и интерфейс, его можно добавить или убрать в любом сохранении.
+
+Перевод на китайский: 夕妄 ([url=https://github.com/zXiWang]zXiWang[/url]).
 
 [h2]中文[/h2]
 为 Kenshi 添加动态浮动伤害数字。
@@ -60,6 +64,4 @@ Font: Exo 2 (SIL Open Font License), the same font Kenshi uses for its floaters.
 新功能：安装 [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3813761584]Mod Config Menu[/url] 后可在游戏内调整 27 项设置：显示哪些数字、文字及其语言、治疗数字、数字大小、显示时长和上升高度、闪光、震动、连击合并、所有颜色和上限，修改立即生效。未安装 MCM 时使用默认值。
 需要 RE_Kenshi 0.3.3 或更新版本，以及在启动器中启用的最新版 KenshiLua。请在游戏选项中关闭原版伤害数字。推荐搭配 [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3822135808]Posh Nameplates[/url]（魔兽世界风格的姓名板），并把它放在本模组之后。本模组只修改脚本和界面，可以随时加入或移出存档。
 
-Simplified Chinese translation: 夕妄 ([url=https://github.com/zXiWang]zXiWang[/url]).
-Перевод на китайский: 夕妄.
-简体中文翻译：夕妄。
+简体中文翻译：夕妄（[url=https://github.com/zXiWang]zXiWang[/url]）。
