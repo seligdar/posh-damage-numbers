@@ -47,6 +47,7 @@ MOD = Mod(
         Section('general', [
             Item('Enabled', 'bool', 'CONFIG', ('enabled',), True),
             Item('ShowOwnSquadDamage', 'bool', 'CONFIG', ('showOwnSquadDamage',), True),
+            Item('FightRange', 'int', 'CONFIG', ('fightRange',), 100, lo=10, hi=1000),
             Item('ShowWords', 'bool', 'CONFIG', ('showWords',), True),
             Item('WordsLanguage', 'choice', 'CONFIG', ('wordsLanguage',), 'auto', values=('auto', 'en', 'ru')),
             Item('ShowHealing', 'bool', 'CONFIG', ('showHealing',), False),

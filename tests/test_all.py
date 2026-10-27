@@ -224,6 +224,43 @@ def words_from_frame_loop():
     assert not errors, errors
 
 
+def far_fights():
+    """Hits farther than fightRange from your people get no numbers; on someone fighting your people (the game's
+    own _isEngagedWithAPlayer mark) and on your own people they show at any distance."""
+    L = runtime("fallback")
+    L.execute("F = newChar('f', 0, -1200, false)")            # 120 m from your character B, in view
+    frames(L, 1.0)
+    L.execute("F.medical.anatomy[2].flesh = 70")
+    frames(L, 0.3)
+    assert len(drawn(L)) == 0, "a fight 120 m from your people got a number"
+    frames(L, 2.0)
+    L.execute("F._isEngagedWithAPlayer = true")
+    frames(L, 1.0)
+    L.execute("F._isEngagedWithAPlayer = false")             # the game clears the mark between its updates
+    frames(L, 1.0)
+    L.execute("F.medical.anatomy[2].flesh = 40")
+    frames(L, 0.3)
+    assert len(drawn(L)) > 0, "no number on someone fighting your people 120 m away"
+    frames(L, 18.0)                                           # the mark (10 s) and the watch after a hit (6 s) run out
+    L.execute("F.medical.anatomy[2].flesh = 20")
+    frames(L, 0.3)
+    assert len(drawn(L)) == 0, "a number after the fight with your people was over"
+    frames(L, 2.0)
+    L.execute("F.z = -600")                                   # 60 m: within the default 100 m
+    frames(L, 1.0)
+    L.execute("F.medical.anatomy[2].flesh = 0")
+    frames(L, 0.3)
+    assert len(drawn(L)) > 0, "no number 60 m from your people"
+    frames(L, 3.0)
+    L.execute("G = newChar('g', 0, -1500, true)")             # one of yours far from the others
+    frames(L, 1.0)
+    L.execute("G.medical.anatomy[2].flesh = 50")
+    frames(L, 0.3)
+    assert len(drawn(L)) > 0, "no number on your own character far from the others"
+    errors = [l for l in log_of(L) if "error" in l.lower()]
+    assert not errors, errors
+
+
 if __name__ == "__main__":
     scenario("fallback projection", basic("fallback"))
     scenario("exact Ogre projection", basic("ogre"))
@@ -232,5 +269,6 @@ if __name__ == "__main__":
     scenario("exact path disagreeing with the game falls back", disagreeing_exact)
     scenario("debug test number", debug_test_number)
     scenario("words from the frame loop, no game event handlers", words_from_frame_loop)
+    scenario("far fights: only near your people or fighting them", far_fights)
     print("FAILURES:", failures)
     sys.exit(1 if failures else 0)

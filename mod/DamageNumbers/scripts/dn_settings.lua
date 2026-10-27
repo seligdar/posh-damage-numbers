@@ -8,6 +8,7 @@ M.section = "PoshDamageNumbers"
 M.items = {
         { key = "Enabled", kind = "bool", root = "CONFIG", path = { "enabled" }, default = true },
         { key = "ShowOwnSquadDamage", kind = "bool", root = "CONFIG", path = { "showOwnSquadDamage" }, default = true },
+        { key = "FightRange", kind = "int", root = "CONFIG", path = { "fightRange" }, default = 100, lo = 10, hi = 1000 },
         { key = "ShowWords", kind = "bool", root = "CONFIG", path = { "showWords" }, default = true },
         { key = "WordsLanguage", kind = "choice", root = "CONFIG", path = { "wordsLanguage" }, default = "auto", values = { "auto", "en", "ru" } },
         { key = "ShowHealing", kind = "bool", root = "CONFIG", path = { "showHealing" }, default = false },

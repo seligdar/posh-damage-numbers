@@ -61,6 +61,14 @@ local camera = {
     end,
 }
 local pi = { camera = camera, getCamera = function() return camera end }
+-- PlayerInterface::playerCharacters: your loaded characters
+setmetatable(pi, { __index = function(t, k)
+    if k == "playerCharacters" then
+        local list = {}
+        for _, c in ipairs(CHARS) do if c.alive and c.player then list[#list + 1] = c end end
+        return list
+    end
+end })
 function getPlayerInterface() return pi end
 function getGameWorld()
     return { player = pi, getCharacterUpdateList = function()

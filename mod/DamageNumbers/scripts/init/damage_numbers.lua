@@ -6,7 +6,8 @@
 -- turrets, animals and anything else that hurts.
 --
 -- How it works:
---   * every half second the nearest characters on screen are put on a watch list;
+--   * every half second the nearest characters on screen are put on a watch list: your people, anyone within
+--     fightRange of them, and anyone fighting them at any distance;
 --   * many times a second their body-part health is compared with the previous reading;
 --   * a drop spawns a number that pops in, flashes, floats up in an arc and fades out;
 --   * hits on the same target within a short window are summed into one growing number;
@@ -58,6 +59,8 @@ local SETTINGS = requireLocal("dn_settings") or {
 local CONFIG = {
     enabled = true,
     showOwnSquadDamage = true,   -- numbers when your own people are hurt (red)
+    fightRange = 100,            -- metres from your people: hits farther away get no numbers, except on someone
+                                 -- fighting your people
     showWords = true,            -- KNOCKOUT / SEVERED / KILLED
     wordsLanguage = "auto",      -- "auto" (follows the game language), "en" or "ru"
     showHealing = false,         -- green +N when a character heals a lot at once
@@ -805,6 +808,63 @@ local watched = {}           -- key -> { ref, parts = {flesh...}, n, heal, healT
 local hitUntil = {}          -- key -> time until which a hit character stays watched
 local clock = 0
 
+-- Who gets numbers: your people, anyone within fightRange of them, and anyone fighting them at any distance.
+-- Fights far from your people (strangers and animals across the map) stay quiet.
+local UNITS_PER_METRE = 10     -- Kenshi's world unit is a decimetre (a human is about 18 units tall)
+local ENGAGED_SECONDS = 10     -- a "fighting your people" mark counts this long after it was last read
+local squadPos = {}
+local function collectSquad()
+    for i = #squadPos, 1, -1 do squadPos[i] = nil end
+    local ok, list = pcall(function()
+        local pi = (getPlayerInterface and getPlayerInterface()) or getGameWorld().player
+        return pi.playerCharacters
+    end)
+    if not ok or list == nil then return end
+    for _, c in ipairs(list) do
+        local okP, pos = pcall(function() return c:getPosition() end)
+        if okP and pos then squadPos[#squadPos + 1] = { x = pos.x, z = pos.z } end
+    end
+end
+
+-- metres on the ground from the nearest of your characters (huge when you have none loaded)
+local function squadDistance(pos)
+    local best = math.huge
+    for _, q in ipairs(squadPos) do
+        local dx, dz = pos.x - q.x, pos.z - q.z
+        local d = dx * dx + dz * dz
+        if d < best then best = d end
+    end
+    return math.sqrt(best) / UNITS_PER_METRE
+end
+
+-- Fighting your people: the game's own mark Character::_isEngagedWithAPlayer, a plain field. The combat AI sets
+-- it on every update while the character's target belongs to the player's faction, the periodic update clears
+-- it, so one reading can fall between the two: a mark counts for ENGAGED_SECONDS.
+local engagedSeen = {}   -- key -> clock of the last reading with the mark
+local engagedLogged = false
+local function engagedWithYou(c, key)
+    local ok, e = pcall(function() return c._isEngagedWithAPlayer end)
+    if not ok then warnOnce("engaged", "the 'fighting your people' mark is unreadable: " .. tostring(e)) end
+    if ok and e == true then
+        engagedSeen[key] = clock
+        if not engagedLogged then
+            engagedLogged = true
+            log(TAG .. "the game marks characters fighting your people; first: " .. key)
+        end
+    end
+    local t = engagedSeen[key]
+    return t ~= nil and clock - t < ENGAGED_SECONDS
+end
+
+-- a character already watched leaves the range a bit later than a new one enters it
+local function concernsYou(c, key, pos)
+    local okS, own = pcall(function() return c:isPlayerCharacter() end)
+    if okS and own == true then return true end
+    if engagedWithYou(c, key) then return true end
+    local range = watched[key] and CONFIG.fightRange * 1.15 or CONFIG.fightRange
+    return squadDistance(pos) <= range
+end
+
 -- Knocked out, dead, and which limbs are cut off, read in the frame loop. The game's own events for these
 -- (MedicalSystem::knockout, MedicalSystem::amputate, Character::declareDead) fire on its worker threads, and
 -- KenshiLua runs event handlers on the thread that fires them: Lua would run on two threads at once and crash
@@ -887,6 +947,10 @@ local function rescan()
     if world == nil then return end
     local okSet, set = pcall(function() return world:getCharacterUpdateList() end)
     if not okSet or set == nil then warnOnce("scan", "character list unavailable") return end
+    collectSquad()
+    for key, t in pairs(engagedSeen) do
+        if clock - t > ENGAGED_SECONDS + 5 then engagedSeen[key] = nil end
+    end
     for i = #scanList, 1, -1 do scanList[i] = nil end
     for c in pairs(set) do
         local key = keyOf(c)
@@ -905,7 +969,7 @@ local function rescan()
                     if okV then seen = v end
                 end
                 if seen == nil then seen = onScreen(x, y, 0.2 * W) end
-                if seen or (hitUntil[key] and hitUntil[key] > clock) then
+                if (seen or (hitUntil[key] and hitUntil[key] > clock)) and concernsYou(c, key, pos) then
                     local d = math.huge
                     if onScreen(x, y, 0.2 * W) then d = (x - W * 0.5) ^ 2 + (y - H * 0.5) ^ 2 end
                     -- a fight on screen comes first; one out of view (behind the camera, elsewhere in the loaded
